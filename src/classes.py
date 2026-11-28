@@ -5,9 +5,9 @@ A file for storing all objects in the game.
 import const
 
 
-class Cell:
+class Tile:
     """
-    Store data related to a cell of land.
+    Store data related to a tile of land.
     """
 
     def __init__(self, land_type: str, secondary_type: str = ""):
@@ -23,25 +23,25 @@ class Cell:
 
 class Map:
     """
-    Store Cells in a 2D grid of nested lists, indexed as cells[row][col].
+    Store Tiles in a 2D grid of nested lists, indexed as tiles[row][col].
     """
 
-    def __init__(self, height: int, width: int, cells=None):
+    def __init__(self, height: int, width: int, tiles=None):
         assert height > 2 and width > 2
         self.height = height
         self.width = width
-        if cells is None:
+        if tiles is None:
             self._generate_map(height, width)
         else:
-            self.cells = cells
+            self.tiles = tiles
 
     def _generate_map(self, height, width):
         # Each Map is bordered by mountains; the interior defaults to grassland.
         # The border test goes in the value (a conditional expression), not as
-        # a comprehension filter, so every row gets exactly `width` cells.
-        self.cells = [
+        # a comprehension filter, so every row gets exactly `width` tiles.
+        self.tiles = [
             [
-                Cell(
+                Tile(
                     const.MOUNTAIN
                     if i in (0, width - 1) or j in (0, height - 1)
                     else const.GRASSLAND

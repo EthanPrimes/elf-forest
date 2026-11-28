@@ -21,19 +21,40 @@ import textwrap
 import classes
 import const
 
-# How each land type is drawn: (character, curses colour or None for default).
+# Text colours as (256-colour index, basic 8-colour fallback). Most terminals
+# support 256 colours; the fallback covers ones that only have the basic 8,
+# which have no gray, brown or pink.
+# 256-colour chart: https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+DARK_GRAY = (240, curses.COLOR_WHITE)
+GRAY = (244, curses.COLOR_WHITE)
+SILVER = (250, curses.COLOR_WHITE)
+GREEN = (34, curses.COLOR_GREEN)
+BLUE = (33, curses.COLOR_BLUE)
+BROWN = (130, curses.COLOR_YELLOW)
+BROWNISH_GREEN = (100, curses.COLOR_GREEN)
+DARK_PINK = (162, curses.COLOR_MAGENTA)
+
+# How each land type is drawn: (character, text colour or None for default).
+# Characters and colours come from notes/tiles.md.
 GLYPHS = {
-    const.GRASSLAND: (".", curses.COLOR_GREEN),
-    const.MOUNTAIN: ("M", curses.COLOR_RED),
+    const.MOUNTAIN: ("M", DARK_GRAY),
+    const.GRASSLAND: (".", GREEN),
+    const.FLOWING_WATER: ("≈", BLUE),
+    const.WATER_SOURCE: ("O", BLUE),
+    const.STONE: ("#", GRAY),
+    const.DIRT: (".", BROWN),
+    const.OAK_TREES: ("Ʌ", BROWNISH_GREEN),
+    const.FRUIT_TREES: ("T", DARK_PINK),
+    const.GENESIS_TREE: ("@", SILVER),
 }
 UNKNOWN_GLYPH = ("?", None)
 
 
-def cell_glyph(cell: classes.Cell):
+def tile_glyph(tile: classes.Tile):
     """
-    Return the (character, colour) pair used to draw a cell.
+    Return the (character, colour) pair used to draw a tile.
     """
-    return GLYPHS.get(cell.land_type, UNKNOWN_GLYPH)
+    return GLYPHS.get(tile.land_type, UNKNOWN_GLYPH)
 
 
 def map_to_string(map: classes.Map):
@@ -41,7 +62,7 @@ def map_to_string(map: classes.Map):
     Turns a map object into a string (characters only, no colour).
     """
     return "\n".join(
-        "".join(cell_glyph(cell)[0] for cell in row) for row in map.cells
+        "".join(tile_glyph(tile)[0] for tile in row) for row in map.tiles
     )
 
 
@@ -83,7 +104,9 @@ class GameScreen:
             # background), so register one pair per colour in GLYPHS.
             colors = sorted({c for _, c in GLYPHS.values() if c is not None})
             for pair_id, color in enumerate(colors, start=1):
-                curses.init_pair(pair_id, color, background)
+                color_256, color_8 = color
+                foreground = color_256 if curses.COLORS >= 256 else color_8
+                curses.init_pair(pair_id, foreground, background)
                 self._color_attrs[color] = curses.color_pair(pair_id)
 
         # stdscr reads keys while the terminal is too small for the layout.
@@ -158,9 +181,9 @@ class GameScreen:
     def _draw_map(self, game_map):
         rows, cols = self._frame(self.map_win, "Map")
         # Maps larger than the window are clipped at the bottom and right.
-        for y, row in enumerate(game_map.cells[:rows]):
-            for x, cell in enumerate(row[:cols]):
-                char, color = cell_glyph(cell)
+        for y, row in enumerate(game_map.tiles[:rows]):
+            for x, tile in enumerate(row[:cols]):
+                char, color = tile_glyph(tile)
                 self.map_win.addch(y + 1, x + 1, char, self._color_attrs.get(color, 0))
 
     def _draw_stats(self, stats):
