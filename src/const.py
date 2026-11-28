@@ -12,6 +12,7 @@ DIRT = "dirt"
 OAK_TREES = "oak_trees"
 FRUIT_TREES = "fruit_trees"
 GENESIS_TREE = "genesis_tree"
+MAPLE_TREES = "maple_trees"
 
 LAND_TYPES = (
     MOUNTAIN,
@@ -23,4 +24,5 @@ LAND_TYPES = (
     OAK_TREES,
     FRUIT_TREES,
     GENESIS_TREE,
+    MAPLE_TREES,
 )

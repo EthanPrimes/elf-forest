@@ -31,7 +31,7 @@ SILVER = (250, curses.COLOR_WHITE)
 GREEN = (34, curses.COLOR_GREEN)
 BLUE = (33, curses.COLOR_BLUE)
 BROWN = (130, curses.COLOR_YELLOW)
-BROWNISH_GREEN = (100, curses.COLOR_GREEN)
+OLIVE_GREEN = (64, curses.COLOR_GREEN)
 DARK_PINK = (162, curses.COLOR_MAGENTA)
 
 # How each land type is drawn: (character, text colour or None for default).
@@ -43,9 +43,10 @@ GLYPHS = {
     const.WATER_SOURCE: ("O", BLUE),
     const.STONE: ("#", GRAY),
     const.DIRT: (".", BROWN),
-    const.OAK_TREES: ("Ʌ", BROWNISH_GREEN),
+    const.OAK_TREES: ("Ʌ", OLIVE_GREEN),
     const.FRUIT_TREES: ("T", DARK_PINK),
     const.GENESIS_TREE: ("@", SILVER),
+    const.MAPLE_TREES: ("Y", GREEN),
 }
 UNKNOWN_GLYPH = ("?", None)
 

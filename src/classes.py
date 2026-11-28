@@ -13,6 +13,9 @@ class Tile:
     def __init__(self, land_type: str, secondary_type: str = ""):
         self.land_type = land_type
         self.secondary_type = secondary_type
+        # For water tiles: (row, col) offsets of the tiles this one flows
+        # into, e.g. (1, 0) is the tile below. Flowing water has 0-2.
+        self.flow_directions = []
 
     def set_land_type(self, new_land_type):
         self.land_type = new_land_type
