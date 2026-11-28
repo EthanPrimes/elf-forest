@@ -23,7 +23,7 @@ class Cell:
 
 class Map:
     """
-    Store a list of Cells in a 2D numpy array.
+    Store Cells in a 2D grid of nested lists, indexed as cells[row][col].
     """
 
     def __init__(self, height: int, width: int, cells=None):
@@ -36,14 +36,17 @@ class Map:
             self.cells = cells
 
     def _generate_map(self, height, width):
-        # Each Map is bordered by a mountain
-        full_map = [
+        # Each Map is bordered by mountains; the interior defaults to grassland.
+        # The border test goes in the value (a conditional expression), not as
+        # a comprehension filter, so every row gets exactly `width` cells.
+        self.cells = [
             [
-                Cell(const.MOUNTAIN)
+                Cell(
+                    const.MOUNTAIN
+                    if i in (0, width - 1) or j in (0, height - 1)
+                    else const.GRASSLAND
+                )
                 for i in range(width)
-                if (i in [0, width - 1] or j in [0, height - 1])
             ]
             for j in range(height)
         ]
-
-        self.cells = full_map
